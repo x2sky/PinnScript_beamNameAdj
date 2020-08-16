@@ -1,0 +1,47 @@
+////////////////////////////////////
+//BeamNameRemoveBeamID.Script
+//remove beam ID from beam name
+//
+//Required files that are placed in Script Home:
+//BeamNameAdjust.py
+//removeBeamID.Script
+//
+//Modified:
+//2016 10 v0 Becket Hui
+////////////////////////////////////
+
+//create class that stores variables necessary in this script
+Store.At.BeamName = StringKeyDict {};
+//Script Home that stores all scripts
+Store.At.BeamName.At.ScriptHome = SimpleString{String = "/home/ch4jm/PinnacleScripts/BeamName_Adjust/";};
+
+//patient path for storage of secondary script created by python
+Store.At.BeamName.At.PatientPath = SimpleString{};
+Store.At.BeamName.At.PatientPath.AppendString = GetEnv.PATIENTS;
+Store.At.BeamName.At.PatientPath.AppendString = "/";
+Store.At.BeamName.At.PatientPath.AppendString = PatientDirectory;
+
+//creating the secondary script file in the patient folder
+Store.At.BeamName.StringAt.TempCommand = "python \"";
+Store.At.BeamName.At.TempCommand.AppendString = Store.At.BeamName.At.ScriptHome.String;
+Store.At.BeamName.At.TempCommand.AppendString = "\BeamNameAdjust.py\"";
+Store.At.BeamName.At.TempCommand.AppendString = " \"";
+Store.At.BeamName.At.TempCommand.AppendString = Store.At.BeamName.At.PatientPath.String;
+Store.At.BeamName.At.TempCommand.AppendString = "\" Init";
+//this temp command should look like this: python "scripthome/BeamNameAdjust.py" "patientpath" "Init"
+//notice that I quote all the Store.String to make sure python takes each of them as one string even if there are spaces in the string
+SpawnCommand = Store.At.BeamName.At.TempCommand.String;
+
+//run loop to remove beam ID, must be done in a separate script because we need to pass 2 parameters...
+Store.At.BeamName.StringAt.TempCommand = Store.At.BeamName.At.ScriptHome.String;
+Store.At.BeamName.At.TempCommand.AppendString = "/removeBeamID.Script";
+TrialList.Current.BeamList.ChildrenEachCurrent.#"@".Script.ExecuteNow = Store.At.BeamName.At.TempCommand.String;
+
+//run the secondary script in the patient directory
+Store.At.BeamName.StringAt.TempCommand = Store.At.BeamName.At.PatientPath.String;
+Store.At.BeamName.At.TempCommand.AppendString = "/BeamNameAdjust.Script";
+//this temp command should look like this: patientpath\BeamNameAdjust.Script
+ExecuteNow = Store.At.BeamName.At.TempCommand.String;
+
+//free class
+Store.FreeAt.BeamName = "";

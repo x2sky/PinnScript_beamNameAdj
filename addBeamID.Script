@@ -1,0 +1,27 @@
+////////////////////////////////////
+//addBeamID.Script
+//add beam ID to one beam name
+//
+//Required files that are placed in Script Home:
+//BeamNameAdjust.py
+//
+//Modified:
+//2016 10 v0 Becket Hui
+////////////////////////////////////
+
+//First store id and name into variables
+Store.At.BeamName.StringAt.BeamID = TrialList.Current.BeamList.Current.FieldID;
+Store.At.BeamName.StringAt.BeamName = TrialList.Current.BeamList.Current.Name;
+
+//then run the python script
+Store.At.BeamName.StringAt.TempCommandRemove = "python \"";
+Store.At.BeamName.At.TempCommandRemove.AppendString = Store.At.BeamName.At.ScriptHome.String;
+Store.At.BeamName.At.TempCommandRemove.AppendString = "\BeamNameAdjust.py\"";
+Store.At.BeamName.At.TempCommandRemove.AppendString = " \"";
+Store.At.BeamName.At.TempCommandRemove.AppendString = Store.At.BeamName.At.PatientPath.String;
+Store.At.BeamName.At.TempCommandRemove.AppendString = "\" \"";
+Store.At.BeamName.At.TempCommandRemove.AppendString = Store.At.BeamName.At.BeamID.String;
+Store.At.BeamName.At.TempCommandRemove.AppendString = "\" \"";
+Store.At.BeamName.At.TempCommandRemove.AppendString = Store.At.BeamName.At.BeamName.String;
+Store.At.BeamName.At.TempCommandRemove.AppendString = "\" Add";
+SpawnCommand = Store.At.BeamName.At.TempCommandRemove.String;
